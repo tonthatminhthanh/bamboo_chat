@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "152104041555",
+    "project_id": "bamboochat-79a3f",
+    "storage_bucket": "bamboochat-79a3f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152104041555:android:feae60367534a7e3779aa6",
+        "android_client_info": {
+          "package_name": "com.tonthatminhthanh.bamboo_chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYiq3u4pCZI42yM5KF9wGbRguleHOPKyo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
