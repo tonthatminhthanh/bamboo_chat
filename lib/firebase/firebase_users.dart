@@ -25,7 +25,17 @@ class UserSnapshot
   {
     return await documentReference!.update(myUser.toJson());
   }
+  
+  static Stream<DocumentSnapshot> friendshipsFromFirebase(String userEmail)
+  {
+    var friendship = FirebaseFirestore.instance.collection("Friends")
+        .where("user1", isEqualTo: userEmail).snapshots();
+    Stream<DocumentSnapshot> docSnap = friendship.map(
+            (qs) => qs.docs.single);
 
+    return docSnap;
+  }
+  
   static Future<UserSnapshot?> userFromFirebase(String userEmail) async
   {
     UserSnapshot? snapshot;

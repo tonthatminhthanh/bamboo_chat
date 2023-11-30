@@ -340,4 +340,14 @@ class _RegisterPageState extends State<RegisterPage> {
         Navigator.of(context).pop();
       }
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    txtEmail.dispose();
+    txtPasswd.dispose();
+    txtName.dispose();
+    txtDOB.dispose();
+    txtRePasswd.dispose();
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:bamboo_chat/app_pages/test.dart';
+import 'package:bamboo_chat/misc_pages//test.dart';
 import 'package:bamboo_chat/firebase/firebase_users.dart';
 import 'package:bamboo_chat/objects/quotes.dart';
 import 'package:flutter/material.dart';
@@ -201,5 +201,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     super.dispose();
+    txtEmail.dispose();
+    txtPasswd.dispose();
   }
 }
