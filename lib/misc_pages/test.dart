@@ -1,4 +1,5 @@
 import 'package:bamboo_chat/main_pages/contacts_page.dart';
+import 'package:bamboo_chat/main_pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -18,6 +19,13 @@ class TestPage extends StatelessWidget {
                   );
                 },
                 child: Text("Contacts")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ProfilePage(),)
+                  );
+                },
+                child: Text("Profile")),
             ElevatedButton(
               onPressed: () {
                 FirebaseAuth.instance.signOut();

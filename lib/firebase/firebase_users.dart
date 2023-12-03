@@ -35,6 +35,16 @@ class UserSnapshot
 
     return docSnap;
   }
+
+  static Stream<DocumentSnapshot> requestsFromFirebase(String userEmail)
+  {
+    var friendRequests = FirebaseFirestore.instance.collection("Requests")
+        .where("user1", isEqualTo: userEmail).snapshots();
+    Stream<DocumentSnapshot> docSnap = friendRequests.map(
+      (qs) => qs.docs.single
+    );
+    return docSnap;
+  }
   
   static Future<UserSnapshot?> userFromFirebase(String userEmail) async
   {
@@ -48,5 +58,13 @@ class UserSnapshot
             }
     });
     return snapshot;
+  }
+
+  static Stream<UserSnapshot> userStreamFromFirebase(String userEmail)
+  {
+    var users = FirebaseFirestore.instance.collection("Users").where("email", isEqualTo: userEmail)
+        .snapshots();
+    var snapshotStream = users.map((event) => event.docs.single);
+    return snapshotStream.map((snapshot) => UserSnapshot.fromSnapshot(snapshot));
   }
 }
