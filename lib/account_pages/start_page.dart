@@ -1,5 +1,6 @@
 import 'package:bamboo_chat/account_pages/login_page.dart';
 import 'package:bamboo_chat/account_pages/register_page.dart';
+import 'package:bamboo_chat/utilities/Preferences.dart';
 import 'package:flutter/material.dart';
 import '../utilities/custom_button.dart';
 import '../firebase/firebase_connection.dart';
@@ -10,7 +11,9 @@ class EstablishFirebaseConnection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FirebaseConnectionPage(builder: (context) => AccountPage(),);
+    return FirebaseConnectionPage(builder: (context) => MaterialApp(
+      theme: Preferences.getPrefs!.getBool("isDark")! ? ThemeData.dark() : ThemeData.light(),
+      home: AccountPage(),));
   }
 }
 

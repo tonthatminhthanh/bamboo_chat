@@ -1,5 +1,6 @@
 import 'package:bamboo_chat/main_pages/contacts_page.dart';
 import 'package:bamboo_chat/main_pages/profile_page.dart';
+import 'package:bamboo_chat/main_pages/users_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,6 +13,13 @@ class TestPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => UsersPage(),)
+                  );
+                },
+                child: Text("Chat")),
             ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
