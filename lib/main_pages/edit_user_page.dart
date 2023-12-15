@@ -143,7 +143,7 @@ class _EditUserPageState extends State<EditUserPage> {
                           email: widget.snapshop.myUser!.email,
                           displayName: txtName.text,
                           dob: txtDOB.text,
-                          anh: imageUrl!,
+                          anh: imageUrl != null ? imageUrl! : widget.snapshop.myUser!.anh!,
                           isOnline: false));
                       Navigator.of(context).pop();
                     }
