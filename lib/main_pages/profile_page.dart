@@ -1,24 +1,30 @@
+import 'package:bamboo_chat/account_pages/start_page.dart';
 import 'package:bamboo_chat/firebase/firebase_users.dart';
+import 'package:bamboo_chat/main_pages/edit_user_page.dart';
+import 'package:bamboo_chat/utilities/constants.dart';
+import 'package:bamboo_chat/utilities/dialog.dart';
+import 'package:bamboo_chat/utilities/preferences.dart';
+import 'package:bamboo_chat/utilities/theme_provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:provider/provider.dart';
 
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage({super.key});
+  ProfilePage({super.key, required this.mode});
+  ThemeProvider mode;
   String userEmail = FirebaseAuth.instance.currentUser!.email!;
-  SharedPreferences? _preferences;
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int _tabTextIndexSelected = 0;
+  bool? _isDark;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: StreamBuilder(
           stream: UserSnapshot.userStreamFromFirebase(widget.userEmail),
           builder: (context, snapshot) {
@@ -56,8 +62,8 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             else
             {
-              List<ListTile> list = getListTiles();
               UserSnapshot user = snapshot.data!;
+              List<ListTile> list = getListTiles(user);
               return Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +71,24 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: <Widget>[
                     Center(
                       child: ClipOval(
-                        child: Image.network(user.myUser!.anh!, width: 150, height: 150,),
+                        child: Container(
+                          height: 250,
+                          width: 250,
+                          child: CachedNetworkImage(
+                            imageUrl:user.myUser!.anh != null ?
+                            user.myUser!.anh : DEFAULT_AVATAR
+                            ,fit: BoxFit.cover,
+                            progressIndicatorBuilder: (context, url, progress) => CircularProgressIndicator(
+                              value: progress.progress,
+                            ),
+                            errorWidget: (context, url, error) => Row(
+                              children: [
+                                Icon(Icons.error, color: Colors.red,),
+                                Text("Không thể tải hình!", style: TextStyle(color: Colors.red),)
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     Padding(padding: EdgeInsets.only(top: 10)),
@@ -80,14 +103,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     Padding(padding: EdgeInsets.only(top: 5)),
                     Padding(
                       padding: EdgeInsets.only(left: 10),
-                      child: Text("Ngày sinh: " + user.myUser!.dob, style: TextStyle(color: Colors.lightGreen, fontSize: 24)),
+                      child: Text("Ngày sinh: " + user.myUser!.getNgaySinh(), style: TextStyle(color: Colors.lightGreen, fontSize: 24)),
                     ),
                     Flexible(
                         child: ListView.separated(
                             itemBuilder: (context, index) {
                               return list[index];
                             },
-                            separatorBuilder: (context, index) => Divider(color: Colors.white),
+                            separatorBuilder: (context, index) => Divider(),
                             itemCount: list.length),
                     )
                   ],
@@ -99,43 +122,64 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  List<ListTile> getListTiles()
+  List<ListTile> getListTiles(UserSnapshot usersnapshot)
   {
     List<ListTile> list = [
       ListTile(title: Text("Chế độ giao diện tối"),
         trailing: Switch(
-          activeColor: Colors.deepPurple,
+          activeColor: Colors.lightGreen,
           onChanged: (value) => setState(() async {
-            await widget._preferences?.setBool("isDark", value);
+            _isDark = value;
+            saveBool();
+            Provider.of<ThemeProvider>(context, listen: false).toggle(_isDark!);
           }),
-          value: widget._preferences!.getBool("isDark")!,
+          value: _isDark!,
         ),
-      )
+      ),
+      ListTile(
+        title: Text("Chỉnh sửa thông tin cá nhân"),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => EditUserPage(snapshop: usersnapshot),)
+          );
+        },
+      ),
+      ListTile(
+          title: Text("Đăng xuất", style: TextStyle(color: Colors.red)),
+        onTap: () async {
+            bool? canLogOut = await showWarningDialog(
+                context: context, msg: "Bạn có muốn đăng xuất?"
+            );
+          if(canLogOut!)
+            {
+              FirebaseAuth.instance.signOut();
+              Navigator.of(context)
+                  .pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => AccountPage(),),
+                      (Route<dynamic> route) => false);
+            }
+        },
+      ),
     ];
     return list;
+  }
+
+  void loadBool() async
+  {
+    setState(() {
+      _isDark = Preferences.getPrefs!.getBool("isDark");
+    });
+  }
+
+  Future<void> saveBool()
+  async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await Preferences.getPrefs!.setBool("isDark", _isDark!);
   }
 
   @override
   void initState() {
     super.initState();
-    _grabPrefs();
-  }
-
-
-  @override
-  void setState(VoidCallback fn) {
-    super.setState(() {
-
-    });
-    _grabPrefs();
-  }
-
-  void _grabPrefs() async
-  {
-    widget._preferences = await SharedPreferences.getInstance();
-    if(widget._preferences?.getBool("isDark") == null)
-    {
-      widget._preferences?.setBool("isDark", true);
-    }
+    loadBool();
   }
 }

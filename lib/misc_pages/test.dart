@@ -28,13 +28,6 @@ class TestPage extends StatelessWidget {
                 },
                 child: Text("Contacts")),
             ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ProfilePage(),)
-                  );
-                },
-                child: Text("Profile")),
-            ElevatedButton(
               onPressed: () {
                 FirebaseAuth.instance.signOut();
                 Navigator.of(context).pop();

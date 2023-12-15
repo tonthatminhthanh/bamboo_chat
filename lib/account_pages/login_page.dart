@@ -1,10 +1,14 @@
+import 'package:bamboo_chat/main_pages/main_page.dart';
 import 'package:bamboo_chat/misc_pages//test.dart';
 import 'package:bamboo_chat/firebase/firebase_users.dart';
 import 'package:bamboo_chat/objects/quotes.dart';
+import 'package:bamboo_chat/utilities/preferences.dart';
+import 'package:bamboo_chat/utilities/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utilities/constants.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -192,9 +196,10 @@ class _LoginPageState extends State<LoginPage> {
     });
     if(_loggingIn)
       {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => TestPage(),)
-        );
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => ChangeNotifierProvider(
+              create: (context) => ThemeProvider(Preferences.getBool() ? ThemeMode.dark : ThemeMode.light),
+                child: MainPage())), (Route<dynamic> route) => false);
       }
   }
 

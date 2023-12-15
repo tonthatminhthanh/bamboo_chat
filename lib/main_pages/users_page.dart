@@ -17,7 +17,6 @@ class _UsersPageState extends State<UsersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: StreamBuilder(
         stream: UserSnapshot.friendshipsFromFirebase(widget.userEmail!),
         builder: (context, snapshot) {
@@ -155,7 +154,7 @@ class _UsersPageState extends State<UsersPage> {
                           ),
                         );
                       },
-                      separatorBuilder: (context, index) => Divider(color: Colors.white),
+                      separatorBuilder: (context, index) => Divider(),
                       itemCount: friendsList.length,
                     );
                   }

@@ -1,10 +1,12 @@
 import 'package:bamboo_chat/firebase/firebase_connection.dart';
-import 'package:bamboo_chat/utilities/Preferences.dart';
+import 'package:bamboo_chat/utilities/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'account_pages/start_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 
 SharedPreferences? _preferences;
 
@@ -56,7 +58,7 @@ class _BambooChatAppState extends State<BambooChatApp> {
               }
             else
               {
-                return EstablishFirebaseConnection();
+                return FirebaseConnectionPage(builder: (context) => EstablishFirebaseConnection(),);
               }
           },
         ),
@@ -69,7 +71,6 @@ class _BambooChatAppState extends State<BambooChatApp> {
   void initState() {
     super.initState();
     _grabPrefs().then((value) {
-
     });
   }
 }

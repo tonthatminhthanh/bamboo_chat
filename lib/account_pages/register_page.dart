@@ -3,6 +3,7 @@ import 'package:bamboo_chat/utilities/dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bamboo_chat/objects/user.dart';
 import 'package:flutter/material.dart';
+import '../utilities/age.dart';
 import '../utilities/constants.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -104,28 +105,25 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                     validator: (value) {
                       if(value == null || value.isEmpty)
-                        {
-                          return "Vui lòng nhập ngày sinh!";
-                        }
+                      {
+                        return "Vui lòng nhập ngày sinh!";
+                      }
                       if(!checkAge(DateTime.parse(value!)))
                       {
                         return "Trẻ em dưới 13 tuổi không được sử dụng ứng dụng này!";
                       }
                       return null;
                     },
+                    onTap: () async {
+                      final pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime.parse('19000101'),
+                          lastDate: DateTime.now());
+                      txtDOB.text = pickedDate.toString().substring(0,10);
+                    },
                     decoration: InputDecoration(
                         labelText: "Nhập ngày sinh của bạn", prefixIcon: Icon(Icons.date_range),
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.edit_calendar),
-                          onPressed: () async {
-                            final pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                                firstDate: DateTime.parse('19000101'),
-                                lastDate: DateTime.now());
-                            txtDOB.text = pickedDate.toString().substring(0,10);
-                          },
-                        ),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25.0),
                             borderSide: BorderSide(
@@ -311,21 +309,11 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  bool checkAge(DateTime dob)
-  {
-    DateTime today = DateTime.now();
-    Duration ageDiff = today.difference(dob);
-
-    int age = ageDiff.inDays ~/ 365;
-
-    return age >= 13;
-  }
-
   void _signUp() async
   {
     MyUser user = MyUser(
         email: txtEmail.text,
-        displayName: txtName.text, dob: txtDOB.text);
+        displayName: txtName.text, dob: txtDOB.text, anh: DEFAULT_AVATAR, isOnline: false);
     bool success = true;
     var signedUpUser = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: txtEmail.text, password: txtPasswd.text)
@@ -337,6 +325,9 @@ class _RegisterPageState extends State<RegisterPage> {
       {
         showSnackBar(context: context, message: "Đăng ký thành công! Vui lòng đăng nhập!",
             duration: 5);
+        UserSnapshot.createRequestsAndFriends(txtEmail.text);
+        UserSnapshot.addFriend(txtEmail.text, "bing-chat");
+        UserSnapshot.addFriend("bing-chat", txtEmail.text);
         Navigator.of(context).pop();
       }
   }

@@ -4,11 +4,12 @@ class MyUser
   String anh;
   String displayName;
   String dob;
+  bool isOnline;
 
   MyUser({required this.email,
     this.anh = "",
     required this.displayName,
-    required this.dob});
+    required this.dob, required this.isOnline});
 
   String getNgaySinh()
   {
@@ -26,7 +27,9 @@ class MyUser
     email: json["email"],
     anh: json["pfp"],
     displayName: json["name"],
-        dob: json["dob"]);
+        dob: json["dob"],
+      isOnline: json["status"]
+    );
   }
 
   Map<String, dynamic> toJson()
@@ -35,7 +38,8 @@ class MyUser
       "email": this.email,
       "pfp": this.anh,
       "name": this.displayName,
-      "dob": this.dob
+      "dob": this.dob,
+      "status": this.isOnline
     };
   }
 }
