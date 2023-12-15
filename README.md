@@ -1,6 +1,6 @@
 # bamboo_chat
 
-Dự án ứng dụng chat trên Android với bảo mật E2EE
+Dự án ứng dụng chat trên Android với tích hợp Bing Chat
 
 ## Getting Started
 
