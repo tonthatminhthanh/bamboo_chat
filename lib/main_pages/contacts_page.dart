@@ -1,5 +1,6 @@
 import 'package:bamboo_chat/firebase/firebase_users.dart';
 import 'package:bamboo_chat/main_pages/add_request.dart';
+import 'package:bamboo_chat/main_pages/chat_page.dart';
 import 'package:bamboo_chat/objects/user.dart';
 import 'package:bamboo_chat/utilities/image.dart';
 import 'package:flutter/material.dart';
@@ -203,6 +204,16 @@ class _ContactPageState extends State<ContactPage> {
                                         endActionPane: ActionPane(
                                           motion: const ScrollMotion(),
                                           children: [
+                                            widget.currSelection == 1 ? SizedBox.shrink() : SlidableAction(
+                                              onPressed: (context) {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(builder: (context) => ChatPage(friendEmail: friendsList[index]!.myUser!.email),)
+                                                );
+                                              },
+                                              icon: Icons.message,
+                                              foregroundColor: Colors.white,
+                                              backgroundColor: Colors.blue,
+                                            ),
                                             widget.currSelection == 0 ? Container(
                                               width: 0,
                                               height: 0,
